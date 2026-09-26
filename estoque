@@ -1,0 +1,77 @@
+import java.util.ArrayList;
+import java.util.List;
+
+public class Estoque {
+    
+    private List<Produto> produtos = new ArrayList<>();
+
+   
+    public void cadastrarProduto(int id, String nome, int quantidadeInicial) {
+        for (Produto p : produtos) {
+            if (p.getId() == id) {
+                System.out.println("\n[ERRO] Já existe um produto cadastrado com o ID " + id + "!");
+                return;
+            }
+        }
+        Produto novo = new Produto(id, nome, quantidadeInicial);
+        produtos.add(novo);
+        System.out.println("\n[SUCESSO] Produto '" + nome + "' cadastrado com sucesso!");
+    }
+
+
+    public void listarProdutos() {
+        if (produtos.isEmpty()) {
+            System.out.println("\nNenhum produto cadastrado no estoque.");
+            return;
+        }
+        System.out.println("\n--- LISTA DE PRODUTOS ---");
+        for (Produto p : produtos) {
+            System.out.println(p);
+        }
+    }
+
+  
+    public void buscaProduto(int id) {
+        Produto p = encontrarPorId(id);
+        if (p != null) {
+            System.out.println("\n--- PRODUTO ENCONTRADO ---");
+            System.out.println(p);
+        } else {
+            System.out.println("\n[AVISO] Produto com ID " + id + " não foi encontrado.");
+        }
+    }
+
+    
+    public void entrada(int id, int quantidade) {
+        Produto p = encontrarPorId(id);
+        if (p != null) {
+            p.adicionarEstoque(quantidade);
+            System.out.println("\n[SUCESSO] Entrada realizada! Novo saldo de " + p.getNome() + ": " + p.getQuantidade());
+        } else {
+            System.out.println("\n[ERRO] Não é possível dar entrada. ID " + id + " não encontrado.");
+        }
+    }
+
+
+    public void saida(int id, int quantidade) {
+        Produto p = encontrarPorId(id);
+        if (p != null) {
+            if (p.removerEstoque(quantidade)) {
+                System.out.println("\n[SUCESSO] Saída realizada! Novo saldo de " + p.getNome() + ": " + p.getQuantidade());
+            } else {
+                System.out.println("\n[ERRO] Quantidade insuficiente! Saldo atual de " + p.getNome() + " é: " + p.getQuantidade());
+            }
+        } else {
+            System.out.println("\n[ERRO] Não é possível dar saída. ID " + id + " não encontrado.");
+        }
+    }
+
+    private Produto encontrarPorId(int id) {
+        for (Produto p : produtos) {
+            if (p.getId() == id) {
+                return p;
+            }
+        }
+        return null;
+    }
+}
